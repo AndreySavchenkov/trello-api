@@ -4,11 +4,11 @@ import {
   Entity,
   // JoinTable,
   // ManyToMany,
-  // OneToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { hash } from 'bcrypt';
-// import { ArticleEntity } from 'src/article/article.entity';
+import { ColumnEntity } from 'src/column/column.entity';
 
 @Entity({ name: 'users-trello-api' })
 export class UserEntity {
@@ -29,9 +29,9 @@ export class UserEntity {
     this.password = await hash(this.password, 10);
   }
 
-  // @OneToMany(() => ArticleEntity, (article) => article.author)
-  // articles: ArticleEntity[];
-  //
+  @OneToMany(() => ColumnEntity, (column) => column.author)
+  columns: ColumnEntity[];
+
   // @ManyToMany(() => ArticleEntity)
   // @JoinTable()
   // favorites: ArticleEntity[];
