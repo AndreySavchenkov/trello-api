@@ -21,12 +21,6 @@ export class UserEntity {
   @Column()
   username: string;
 
-  @Column({ default: '' })
-  bio: string;
-
-  @Column({ default: '' })
-  image: string;
-
   @Column({ select: false })
   password: string;
 

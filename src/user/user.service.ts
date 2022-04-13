@@ -41,7 +41,7 @@ export class UserService {
       {
         email: loginUserDto.email,
       },
-      { select: ['id', 'email', 'username', 'password', 'bio', 'image'] },
+      { select: ['id', 'email', 'username', 'password'] },
     );
 
     if (!user) {
