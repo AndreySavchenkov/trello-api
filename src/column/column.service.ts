@@ -66,6 +66,25 @@ export class ColumnService {
     return 'this column deleted successful';
   }
 
+  async updateColumnById(
+    currentUserId: number,
+    columnId: number,
+    updateColumnDto: CreateColumnDto,
+  ): Promise<any> {
+    const column = await this.columnRepository.findOne(columnId);
+
+    if (!column) {
+      throw new HttpException('column not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (currentUserId !== column.author.id) {
+      throw new HttpException('You are not an author', HttpStatus.FORBIDDEN);
+    }
+
+    Object.assign(column, updateColumnDto);
+    return await this.columnRepository.save(column);
+  }
+
   buildColumnResponse(column: ColumnEntity): ColumnResponseInterface {
     return { column };
   }

@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -47,7 +46,7 @@ export class ColumnController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  async getSingleArticle(
+  async findById(
     @User('id') currentUserId: number,
     @Param('id') columnId: number,
   ): Promise<ColumnResponseInterface> {
@@ -57,26 +56,26 @@ export class ColumnController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  async deleteArticle(
+  async deleteColumn(
     @User('id') currentUserId: number,
     @Param('id') columnId: number,
   ) {
     return await this.columnService.deleteColumn(columnId, currentUserId);
   }
 
-  // @Put(':slug')
-  // @UseGuards(AuthGuard)
-  // @UsePipes(new ValidationPipe())
-  // async updateArticle(
-  //   @User('id') currentUserId: number,
-  //   @Param('slug') slug: string,
-  //   @Body('article') updateArticleDto: CreateColumnDto,
-  // ): Promise<ColumnResponseInterface> {
-  //   const article = await this.articleService.updateArticle(
-  //     slug,
-  //     updateArticleDto,
-  //     currentUserId,
-  //   );
-  //   return this.articleService.buildArticleResponse(article);
-  // }
+  @Put(':id')
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe())
+  async updateColumnById(
+    @User('id') currentUserId: number,
+    @Param('id') columnId: number,
+    @Body('column') updateColumnDto: CreateColumnDto,
+  ): Promise<ColumnResponseInterface> {
+    const column = await this.columnService.updateColumnById(
+      currentUserId,
+      columnId,
+      updateColumnDto,
+    );
+    return this.columnService.buildColumnResponse(column);
+  }
 }
