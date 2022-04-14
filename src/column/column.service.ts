@@ -17,17 +17,17 @@ export class ColumnService {
 
   async createColumn(
     currentUser: UserEntity,
-    createArticleDto: CreateColumnDto,
+    createColumnDto: CreateColumnDto,
   ): Promise<ColumnEntity> {
-    const article = new ColumnEntity();
-    Object.assign(article, createArticleDto);
+    const column = new ColumnEntity();
+    Object.assign(column, createColumnDto);
 
-    article.author = currentUser;
+    column.author = currentUser;
 
-    return await this.columnRepository.save(article);
+    return await this.columnRepository.save(column);
   }
 
-  async findAll(currentUserId: number): Promise<any> {
+  async findAllColumns(currentUserId: number): Promise<any> {
     const allColumns = await this.columnRepository.find();
 
     const filteredColumns = allColumns.filter(
@@ -37,11 +37,11 @@ export class ColumnService {
     return filteredColumns;
   }
 
-  async findById(columnId: number, currentUserId: number): Promise<any> {
+  async findColumn(columnId: number, currentUserId: number): Promise<any> {
     const column = await this.columnRepository.findOne(columnId);
 
     if (!column) {
-      throw new HttpException('column not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Column not found', HttpStatus.NOT_FOUND);
     }
 
     if (currentUserId !== column.author.id) {
@@ -55,7 +55,7 @@ export class ColumnService {
     const column = await this.columnRepository.findOne(columnId);
 
     if (!column) {
-      throw new HttpException('column not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Column not found', HttpStatus.NOT_FOUND);
     }
 
     if (currentUserId !== column.author.id) {
@@ -63,10 +63,10 @@ export class ColumnService {
     }
     await this.columnRepository.delete(columnId);
 
-    return 'this column deleted successful';
+    return 'This column deleted successful';
   }
 
-  async updateColumnById(
+  async updateColumn(
     currentUserId: number,
     columnId: number,
     updateColumnDto: CreateColumnDto,
@@ -74,7 +74,7 @@ export class ColumnService {
     const column = await this.columnRepository.findOne(columnId);
 
     if (!column) {
-      throw new HttpException('column not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Column not found', HttpStatus.NOT_FOUND);
     }
 
     if (currentUserId !== column.author.id) {

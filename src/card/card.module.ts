@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/user.entity';
 import { ColumnEntity } from 'src/column/column.entity';
-import { ColumnController } from 'src/column/column.controller';
-import { ColumnService } from 'src/column/column.service';
+import { UserEntity } from 'src/user/user.entity';
 import { CardEntity } from 'src/card/card.entity';
+import { CardController } from 'src/card/card.controller';
+import { CardService } from 'src/card/card.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ColumnEntity, UserEntity, CardEntity])],
-  controllers: [ColumnController],
-  providers: [ColumnService],
+  controllers: [CardController],
+  providers: [CardService],
 })
-export class ColumnModule {}
+export class CardModule {}

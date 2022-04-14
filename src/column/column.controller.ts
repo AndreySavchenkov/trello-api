@@ -24,16 +24,16 @@ export class ColumnController {
 
   @Get()
   @UseGuards(AuthGuard)
-  async findAll(
+  async findAllColumns(
     @User('id') currentUserId: number,
   ): Promise<ColumnsResponseInterface> {
-    return await this.columnService.findAll(currentUserId);
+    return await this.columnService.findAllColumns(currentUserId);
   }
 
   @Post()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
-  async create(
+  async createColumn(
     @User() currentUser: UserEntity,
     @Body('column') createArticleDto: CreateColumnDto,
   ): Promise<ColumnResponseInterface> {
@@ -46,11 +46,14 @@ export class ColumnController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  async findById(
+  async findColumnById(
     @User('id') currentUserId: number,
     @Param('id') columnId: number,
   ): Promise<ColumnResponseInterface> {
-    const article = await this.columnService.findById(columnId, currentUserId);
+    const article = await this.columnService.findColumn(
+      columnId,
+      currentUserId,
+    );
     return this.columnService.buildColumnResponse(article);
   }
 
@@ -71,7 +74,7 @@ export class ColumnController {
     @Param('id') columnId: number,
     @Body('column') updateColumnDto: CreateColumnDto,
   ): Promise<ColumnResponseInterface> {
-    const column = await this.columnService.updateColumnById(
+    const column = await this.columnService.updateColumn(
       currentUserId,
       columnId,
       updateColumnDto,

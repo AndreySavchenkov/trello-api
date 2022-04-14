@@ -3,19 +3,20 @@ import {
   Column,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserEntity } from 'src/user/user.entity';
-import { CardEntity } from 'src/card/card.entity';
+import { ColumnEntity } from 'src/column/column.entity';
 
-@Entity({ name: 'columns-trello' })
-export class ColumnEntity {
+@Entity({ name: 'cards-trello' })
+export class CardEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   title: string;
+
+  @Column()
+  body: string;
 
   @Column({ default: '' })
   description: string;
@@ -31,11 +32,8 @@ export class ColumnEntity {
     this.updatedAt = new Date();
   }
 
-  @ManyToOne(() => UserEntity, (user) => user.columns, {
+  @ManyToOne(() => ColumnEntity, (column) => column.cards, {
     eager: true,
   })
-  author: UserEntity;
-
-  @OneToMany(() => CardEntity, (card) => card.column)
-  cards: CardEntity[];
+  column: ColumnEntity;
 }
