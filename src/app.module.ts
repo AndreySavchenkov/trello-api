@@ -16,7 +16,19 @@ import { CommentModule } from 'src/comment/comment.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(ormconfing),
+    TypeOrmModule.forRoot(
+      // ormconfing
+      {
+        url: process.env.DATABASE_URL,
+        type: 'postgres',
+        ssl: {
+          rejectUnauthorized: false,
+        },
+        entities: ['dist/**/*.entity{.ts,.js}'],
+        synchronize: true, // This for development
+        autoLoadEntities: true,
+      },
+    ),
     UserModule,
     ColumnModule,
     CardModule,
