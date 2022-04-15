@@ -3,9 +3,11 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ColumnEntity } from 'src/column/column.entity';
+import { CommentEntity } from 'src/comment/comment.entity';
 
 @Entity({ name: 'cards-trello' })
 export class CardEntity {
@@ -36,4 +38,7 @@ export class CardEntity {
     eager: true,
   })
   column: ColumnEntity;
+
+  @OneToMany(() => CommentEntity, (comment) => comment.card)
+  comments: CommentEntity[];
 }

@@ -4,10 +4,11 @@ import {
   Delete,
   Get,
   Param,
-  Post, Put,
+  Post,
+  Put,
   UseGuards,
   UsePipes,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/user/guards/auth.guard';
 import { CardService } from 'src/card/card.service';
@@ -15,8 +16,6 @@ import { CreateCardDto } from 'src/card/dto/createCard.dto';
 import { CardResponseInterface } from 'src/card/type/cardResponseInterface';
 import { User } from 'src/user/decorators/user.decorator';
 import { ColumnsResponseInterface } from 'src/column/types/columnsResponseInterface';
-import { CreateColumnDto } from 'src/column/dto/createColumn.dto';
-import { ColumnResponseInterface } from 'src/column/types/columnResponseInterface';
 
 @Controller('/users/:userId/columns/:columnId/cards')
 export class CardController {
@@ -50,7 +49,7 @@ export class CardController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  async findCardByid(
+  async findCardById(
     @User('id') currentUserId: number,
     @Param('id') cardId: number,
   ): Promise<CardResponseInterface> {

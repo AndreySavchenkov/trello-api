@@ -12,6 +12,7 @@ import ormconfing from 'src/orm.config';
 import { AuthMiddleware } from 'src/user/middlewares/auth-middleware.service';
 import { ColumnModule } from 'src/column/column.module';
 import { CardModule } from 'src/card/card.module';
+import { CommentModule } from 'src/comment/comment.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CardModule } from 'src/card/card.module';
     UserModule,
     ColumnModule,
     CardModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
