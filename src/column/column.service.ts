@@ -34,18 +34,18 @@ export class ColumnService {
       (item) => item.author.id === currentUserId,
     );
 
+    if (!filteredColumns) {
+      throw new HttpException('Columns not found', HttpStatus.NOT_FOUND);
+    }
+
     return filteredColumns;
   }
 
-  async findColumn(columnId: number, currentUserId: number): Promise<any> {
+  async findColumn(columnId: number): Promise<any> {
     const column = await this.columnRepository.findOne(columnId);
 
     if (!column) {
       throw new HttpException('Column not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (currentUserId !== column.author.id) {
-      throw new HttpException('You are not an author', HttpStatus.FORBIDDEN);
     }
 
     return column;

@@ -17,12 +17,25 @@ import { CreateColumnDto } from 'src/column/dto/createColumn.dto';
 import { ColumnResponseInterface } from 'src/column/types/columnResponseInterface';
 import { ColumnsResponseInterface } from 'src/column/types/columnsResponseInterface';
 import { ColumnService } from 'src/column/column.service';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ColumnsResponseSwagger } from 'src/column/types/columnsResponseSwagger';
+import { ColumnResponseSwagger } from 'src/column/types/columnResponseSwagger';
 
-@Controller('/users/:id/columns')
+@ApiTags('Columns')
+@Controller('/user/columns')
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
 
   @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'Get all columns',
+    type: ColumnsResponseSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Columns not found',
+  })
   @UseGuards(AuthGuard)
   async findAllColumns(
     @User('id') currentUserId: number,
@@ -31,11 +44,17 @@ export class ColumnController {
   }
 
   @Post()
+  @ApiBody({ type: CreateColumnDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Create column',
+    type: ColumnResponseSwagger,
+  })
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async createColumn(
     @User() currentUser: UserEntity,
-    @Body('column') createArticleDto: CreateColumnDto,
+    @Body() createArticleDto: CreateColumnDto,
   ): Promise<ColumnResponseInterface> {
     const column = await this.columnService.createColumn(
       currentUser,
@@ -44,35 +63,66 @@ export class ColumnController {
     return this.columnService.buildColumnResponse(column);
   }
 
-  @Get(':id')
+  @Get(':columnId')
+  @ApiResponse({
+    status: 200,
+    description: 'Get column by id',
+    type: ColumnResponseSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Column not found',
+  })
   @UseGuards(AuthGuard)
   async findColumnById(
-    @User('id') currentUserId: number,
-    @Param('id') columnId: number,
+    @Param('columnId') columnId: number,
   ): Promise<ColumnResponseInterface> {
-    const article = await this.columnService.findColumn(
-      columnId,
-      currentUserId,
-    );
+    const article = await this.columnService.findColumn(columnId);
     return this.columnService.buildColumnResponse(article);
   }
 
-  @Delete(':id')
+  @Delete(':columnId')
+  @ApiResponse({
+    status: 200,
+    description: 'Delete column by id',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Column not found',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'You are not author',
+  })
   @UseGuards(AuthGuard)
   async deleteColumn(
     @User('id') currentUserId: number,
-    @Param('id') columnId: number,
-  ) {
+    @Param('columnId') columnId: number,
+  ): Promise<string> {
     return await this.columnService.deleteColumn(columnId, currentUserId);
   }
 
-  @Put(':id')
+  @Put(':columnId')
+  @ApiBody({ type: CreateColumnDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Update column by id',
+    type: ColumnResponseSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Column not found',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'You are not author',
+  })
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async updateColumnById(
     @User('id') currentUserId: number,
-    @Param('id') columnId: number,
-    @Body('column') updateColumnDto: CreateColumnDto,
+    @Param('columnId') columnId: number,
+    @Body() updateColumnDto: CreateColumnDto,
   ): Promise<ColumnResponseInterface> {
     const column = await this.columnService.updateColumn(
       currentUserId,

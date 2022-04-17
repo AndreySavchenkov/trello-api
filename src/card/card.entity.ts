@@ -8,19 +8,24 @@ import {
 } from 'typeorm';
 import { ColumnEntity } from 'src/column/column.entity';
 import { CommentEntity } from 'src/comment/comment.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'cards-trello' })
 export class CardEntity {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
+  @ApiProperty()
   title: string;
 
   @Column()
+  @ApiProperty()
   body: string;
 
   @Column({ default: '' })
+  @ApiProperty({ default: '' })
   description: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

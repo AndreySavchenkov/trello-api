@@ -17,24 +17,24 @@ import { CommentModule } from 'src/comment/comment.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(
-      // ormconfing
-      {
-        url: process.env.DATABASE_URL,
-        type: 'postgres',
-        ssl: {
-          rejectUnauthorized: false,
-        },
-        entities: ['dist/**/*.entity{.ts,.js}'],
-        synchronize: true, // This for development
-        autoLoadEntities: true,
-      },
+      ormconfing
+      // {
+      //   url: process.env.DATABASE_URL,
+      //   type: 'postgres',
+      //   ssl: {
+      //     rejectUnauthorized: false,
+      //   },
+      //   entities: ['dist/**/*.entity{.ts,.js}'],
+      //   synchronize: true, // This for development
+      //   autoLoadEntities: true,
+      // },
     ),
     UserModule,
     ColumnModule,
     CardModule,
     CommentModule,
   ],
-  controllers: [AppController],
+  // controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {

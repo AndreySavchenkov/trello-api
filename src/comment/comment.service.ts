@@ -27,7 +27,7 @@ export class CommentService {
       .where('card.id = :cardId', { cardId })
       .leftJoinAndSelect('card.comments', 'comments')
       .getMany();
-    console.log(cardId);
+
     return allCommentsForCard;
   }
 
@@ -92,7 +92,6 @@ export class CommentService {
     }
 
     Object.assign(comment, updateCommentDto);
-    console.log('updateComment ->', updateCommentDto);
     return await this.commentRepository.save(comment);
   }
 

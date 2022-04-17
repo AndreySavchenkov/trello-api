@@ -16,28 +16,53 @@ import { CreateCardDto } from 'src/card/dto/createCard.dto';
 import { CardResponseInterface } from 'src/card/type/cardResponseInterface';
 import { User } from 'src/user/decorators/user.decorator';
 import { ColumnsResponseInterface } from 'src/column/types/columnsResponseInterface';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CardsResponseSwagger } from 'src/card/type/cardsResponseSwagger';
+import { CardResponseSwagger } from 'src/card/type/cardResponseSwagger';
 
-@Controller('/users/:userId/columns/:columnId/cards')
+@ApiTags('Cards')
+@Controller('/users/columns/:columnId/cards')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
   @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'Get all cards',
+    type: CardsResponseSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Column not found',
+  })
   @UseGuards(AuthGuard)
   async findAllCards(
-    @User('id') currentUserId: number,
     @Param('columnId') columnId: number,
-    @Param('userId') userId: number,
   ): Promise<ColumnsResponseInterface> {
-    return await this.cardService.findAllCards(currentUserId, columnId, userId);
+    return await this.cardService.findAllCards(columnId);
   }
 
   @Post()
+  @ApiBody({ type: CreateCardDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Create a card',
+    type: CardResponseSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Column not found',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'You are not author',
+  })
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async createCard(
     @User('id') currentUserId: number,
     @Param('columnId') columnId: number,
-    @Body('card') createCardDto: CreateCardDto,
+    @Body() createCardDto: CreateCardDto,
   ): Promise<CardResponseInterface> {
     const card = await this.cardService.createCard(
       currentUserId,
@@ -47,32 +72,66 @@ export class CardController {
     return this.cardService.buildCardResponse(card);
   }
 
-  @Get(':id')
+  @Get(':cardId')
+  @ApiResponse({
+    status: 200,
+    description: 'Create a card',
+    type: CardResponseSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Card not found',
+  })
   @UseGuards(AuthGuard)
   async findCardById(
-    @User('id') currentUserId: number,
-    @Param('id') cardId: number,
+    @Param('cardId') cardId: number,
   ): Promise<CardResponseInterface> {
-    const card = await this.cardService.findCardById(currentUserId, cardId);
+    const card = await this.cardService.findCardById(cardId);
     return this.cardService.buildCardResponse(card);
   }
 
-  @Delete(':id')
+  @Delete(':cardId')
+  @ApiResponse({
+    status: 200,
+    description: 'Delete card by id',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Card not found',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'You are not author',
+  })
   @UseGuards(AuthGuard)
   async deleteCard(
     @User('id') currentUserId: number,
-    @Param('id') cardId: number,
+    @Param('cardId') cardId: number,
   ) {
     return await this.cardService.deleteCard(currentUserId, cardId);
   }
 
-  @Put(':id')
+  @Put(':cardId')
+  @ApiBody({ type: CreateCardDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Update column by id',
+    type: CardResponseSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Column not found',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'You are not author',
+  })
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe())
   async updateCardById(
     @User('id') currentUserId: number,
-    @Param('id') cardId: number,
-    @Body('card') updateCardDto: CreateCardDto,
+    @Param('cardId') cardId: number,
+    @Body() updateCardDto: CreateCardDto,
   ): Promise<CardResponseInterface> {
     const card = await this.cardService.updateCard(
       currentUserId,

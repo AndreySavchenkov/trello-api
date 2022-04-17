@@ -18,11 +18,7 @@ export class CardService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async findAllCards(
-    currentUserId: number,
-    columnId: number,
-    userId: number,
-  ): Promise<any> {
+  async findAllCards(columnId: number): Promise<any> {
     const column = await this.columnRepository.findOne(columnId);
 
     if (!column) {
@@ -49,6 +45,10 @@ export class CardService {
       throw new HttpException('Column not found', HttpStatus.NOT_FOUND);
     }
 
+    if (currentUserId !== column.author.id) {
+      throw new HttpException('You are not author', HttpStatus.FORBIDDEN);
+    }
+
     const card = new CardEntity();
     Object.assign(card, createCardDto);
 
@@ -57,7 +57,7 @@ export class CardService {
     return await this.cardRepository.save(card);
   }
 
-  async findCardById(currentUserId: number, cardId: number): Promise<any> {
+  async findCardById(cardId: number): Promise<any> {
     const card = await this.cardRepository.findOne(cardId);
 
     if (!card) {
