@@ -11,4 +11,5 @@ import { AuthGuard } from 'src/user/guards/auth.guard';
   providers: [UserService, AuthGuard],
   exports: [UserService],
 })
+
 export class UserModule {}
