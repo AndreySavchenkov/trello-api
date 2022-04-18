@@ -16,16 +16,26 @@ import { CreateCardDto } from 'src/card/dto/createCard.dto';
 import { CardResponseInterface } from 'src/card/type/cardResponseInterface';
 import { User } from 'src/user/decorators/user.decorator';
 import { ColumnsResponseInterface } from 'src/column/types/columnsResponseInterface';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags
+} from '@nestjs/swagger';
 import { CardsResponseSwagger } from 'src/card/type/cardsResponseSwagger';
 import { CardResponseSwagger } from 'src/card/type/cardResponseSwagger';
 
+@ApiBearerAuth()
 @ApiTags('Cards')
-@Controller('/users/columns/:columnId/cards')
+@Controller('/user/columns/:columnId/cards')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Get all cards for specified column',
+  })
   @ApiResponse({
     status: 200,
     description: 'Get all cards',
@@ -43,6 +53,9 @@ export class CardController {
   }
 
   @Post()
+  @ApiOperation({
+    summary: 'Create card for specified column',
+  })
   @ApiBody({ type: CreateCardDto })
   @ApiResponse({
     status: 200,
@@ -73,9 +86,12 @@ export class CardController {
   }
 
   @Get(':cardId')
+  @ApiOperation({
+    summary: 'Get card by id',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Create a card',
+    description: 'Get card by id',
     type: CardResponseSwagger,
   })
   @ApiResponse({
@@ -84,6 +100,7 @@ export class CardController {
   })
   @UseGuards(AuthGuard)
   async findCardById(
+    @Param('columnId') columnId: number,
     @Param('cardId') cardId: number,
   ): Promise<CardResponseInterface> {
     const card = await this.cardService.findCardById(cardId);
@@ -91,6 +108,9 @@ export class CardController {
   }
 
   @Delete(':cardId')
+  @ApiOperation({
+    summary: 'Delete card by id',
+  })
   @ApiResponse({
     status: 200,
     description: 'Delete card by id',
@@ -106,21 +126,25 @@ export class CardController {
   @UseGuards(AuthGuard)
   async deleteCard(
     @User('id') currentUserId: number,
+    @Param('columnId') columnId: number,
     @Param('cardId') cardId: number,
   ) {
     return await this.cardService.deleteCard(currentUserId, cardId);
   }
 
   @Put(':cardId')
+  @ApiOperation({
+    summary: 'Update card by id',
+  })
   @ApiBody({ type: CreateCardDto })
   @ApiResponse({
     status: 200,
-    description: 'Update column by id',
+    description: 'Update card by id',
     type: CardResponseSwagger,
   })
   @ApiResponse({
     status: 404,
-    description: 'Column not found',
+    description: 'Card not found',
   })
   @ApiResponse({
     status: 403,
@@ -130,6 +154,7 @@ export class CardController {
   @UsePipes(new ValidationPipe())
   async updateCardById(
     @User('id') currentUserId: number,
+    @Param('columnId') columnId: number,
     @Param('cardId') cardId: number,
     @Body() updateCardDto: CreateCardDto,
   ): Promise<CardResponseInterface> {

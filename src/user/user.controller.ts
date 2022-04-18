@@ -15,7 +15,13 @@ import { LoginUserDto } from 'src/user/dto/login.dto';
 import { User } from 'src/user/decorators/user.decorator';
 import { AuthGuard } from 'src/user/guards/auth.guard';
 import { UpdateUserDto } from 'src/user/dto/updateUser.dto';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserResponseSwagger } from 'src/user/types/userResponseSwagger';
 
 @ApiTags('Users')
@@ -24,6 +30,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
+  @ApiOperation({
+    summary: 'User registration',
+  })
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({
     status: 201,
@@ -40,6 +49,9 @@ export class UserController {
   }
 
   @Post('login')
+  @ApiOperation({
+    summary: 'User login',
+  })
   @ApiBody({ type: LoginUserDto })
   @ApiResponse({
     status: 201,
@@ -59,6 +71,10 @@ export class UserController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: 'Get current user',
+  })
+  @ApiBearerAuth()
   @ApiResponse({
     status: 201,
     description: 'Get user',
@@ -75,6 +91,10 @@ export class UserController {
   }
 
   @Put()
+  @ApiOperation({
+    summary: 'Update user',
+  })
+  @ApiBearerAuth()
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({
     status: 201,

@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('Trello')
     .setDescription('The trello API description')
     .setVersion('1.0.0')
+    .addBearerAuth()
     // .setBasePath('http://localhost:5000')
     .build();
   const document = SwaggerModule.createDocument(app, options);

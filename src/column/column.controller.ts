@@ -17,16 +17,26 @@ import { CreateColumnDto } from 'src/column/dto/createColumn.dto';
 import { ColumnResponseInterface } from 'src/column/types/columnResponseInterface';
 import { ColumnsResponseInterface } from 'src/column/types/columnsResponseInterface';
 import { ColumnService } from 'src/column/column.service';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ColumnsResponseSwagger } from 'src/column/types/columnsResponseSwagger';
 import { ColumnResponseSwagger } from 'src/column/types/columnResponseSwagger';
 
+@ApiBearerAuth()
 @ApiTags('Columns')
 @Controller('/user/columns')
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Get all columns for specified user',
+  })
   @ApiResponse({
     status: 200,
     description: 'Get all columns',
@@ -44,10 +54,13 @@ export class ColumnController {
   }
 
   @Post()
+  @ApiOperation({
+    summary: 'Create column for specified user',
+  })
   @ApiBody({ type: CreateColumnDto })
   @ApiResponse({
     status: 200,
-    description: 'Create column',
+    description: 'Create a column',
     type: ColumnResponseSwagger,
   })
   @UseGuards(AuthGuard)
@@ -64,6 +77,9 @@ export class ColumnController {
   }
 
   @Get(':columnId')
+  @ApiOperation({
+    summary: 'Get column by id',
+  })
   @ApiResponse({
     status: 200,
     description: 'Get column by id',
@@ -82,6 +98,9 @@ export class ColumnController {
   }
 
   @Delete(':columnId')
+  @ApiOperation({
+    summary: 'Delete column by id',
+  })
   @ApiResponse({
     status: 200,
     description: 'Delete column by id',
@@ -103,6 +122,9 @@ export class ColumnController {
   }
 
   @Put(':columnId')
+  @ApiOperation({
+    summary: 'Update column by id',
+  })
   @ApiBody({ type: CreateColumnDto })
   @ApiResponse({
     status: 200,

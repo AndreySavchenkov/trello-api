@@ -16,16 +16,26 @@ import { User } from 'src/user/decorators/user.decorator';
 import { CreateCommentDto } from 'src/comment/dto/createComment.dto';
 import { CommentResponseInterface } from 'src/comment/types/commentResponseInterface';
 import { CommentsResponseInterface } from 'src/comment/types/commentsResponseInterface';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CommentsResponseSwagger } from 'src/comment/types/commentsResponseSwagger';
 import { CommentResponseSwagger } from 'src/comment/types/commentResponseSwagger';
 
+@ApiBearerAuth()
 @ApiTags('Comments')
-@Controller('/users/columns/:columnId/cards/:cardId/comments')
+@Controller('/user/columns/:columnId/cards/:cardId/comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Get all comments for specified card',
+  })
   @ApiResponse({
     status: 200,
     description: 'Get all columns',
@@ -37,12 +47,16 @@ export class CommentController {
   })
   @UseGuards(AuthGuard)
   async findAllComments(
+    @Param('columnId') columnId: number,
     @Param('cardId') cardId: number,
   ): Promise<CommentsResponseInterface> {
     return await this.commentService.findAllComments(cardId);
   }
 
   @Post()
+  @ApiOperation({
+    summary: 'Create comment for specified card',
+  })
   @ApiBody({ type: CreateCommentDto })
   @ApiResponse({
     status: 200,
@@ -57,6 +71,7 @@ export class CommentController {
   @UsePipes(new ValidationPipe())
   async createComment(
     @User('id') currentUserId: number,
+    @Param('columnId') columnId: number,
     @Param('cardId') cardId: number,
     @Body() createCommentDto: CreateCommentDto,
   ): Promise<CommentResponseInterface> {
@@ -69,9 +84,12 @@ export class CommentController {
   }
 
   @Get(':commentId')
+  @ApiOperation({
+    summary: 'Get comment by id',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Get column by id',
+    description: 'Get comment by id',
     type: CommentResponseSwagger,
   })
   @ApiResponse({
@@ -80,6 +98,8 @@ export class CommentController {
   })
   @UseGuards(AuthGuard)
   async findCommentById(
+    @Param('columnId') columnId: number,
+    @Param('cardId') cardId: number,
     @Param('commentId') commentId: number,
   ): Promise<CommentResponseInterface> {
     const comment = await this.commentService.findCommentById(commentId);
@@ -87,6 +107,9 @@ export class CommentController {
   }
 
   @Delete(':commentId')
+  @ApiOperation({
+    summary: 'Delete comment by id',
+  })
   @ApiResponse({
     status: 200,
     description: 'This comment deleted successful',
@@ -102,12 +125,17 @@ export class CommentController {
   @UseGuards(AuthGuard)
   async deleteComment(
     @User('id') currentUserId: number,
+    @Param('columnId') columnId: number,
+    @Param('cardId') cardId: number,
     @Param('commentId') commentId: number,
   ): Promise<string> {
     return await this.commentService.deleteComment(currentUserId, commentId);
   }
 
   @Put(':commentId')
+  @ApiOperation({
+    summary: 'Update comment by id',
+  })
   @ApiBody({ type: CreateCommentDto })
   @ApiResponse({
     status: 200,
