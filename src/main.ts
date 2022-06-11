@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.enableCors();
   const options = new DocumentBuilder()
     .setTitle('Trello')
     .setDescription('The trello API description')
