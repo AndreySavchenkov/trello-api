@@ -34,7 +34,8 @@ import { CommentModule } from 'src/comment/comment.module';
     CardModule,
     CommentModule,
   ],
-  // controllers: [AppController],
+  //maybe must comment below
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
